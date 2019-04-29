@@ -104,7 +104,10 @@
             show: false,
             type: 'text',
             autoHide: true,
-            addMessage: true
+            addMessage: true,
+            datepicker: {
+              value: []
+            }
           },
           messages: []
         };
@@ -191,7 +194,16 @@
               }
             }
           }
-        }
+        },
+        handle_action_datepicker: function () {
+    			if(!this.action.datepicker.value) return;
+          _handleAction(this.action.datepicker.value);
+    			_actionResolve({
+            type: 'datepicker',
+            value: this.action.datepicker.value
+          });
+    			this.action.datepicker.value = [];
+    		},
     	}
     };
 
@@ -385,7 +397,12 @@
         _instance.action.button.buttons = _opts.actionButton;
         _instance.action.text = _opts.actionText;
         return _showActions(_opts);
-      }
+      },
+      datepicker: function (_opts) {
+        _checkAction(_opts);
+        _opts.type = 'datepicker';
+        return _showActions(_opts);
+      },
     };
 
     if(_options.fontawesome) {

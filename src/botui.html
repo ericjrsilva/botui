@@ -85,6 +85,22 @@
             </button>
           </div>
         </form>
+        <form v-if="action.type == 'datepicker'" class="botui-actions-text"
+          @submit.prevent="handle_action_datepicker()" :class="action.cssClass">
+          <i v-if="action.text.icon"
+          class="botui-icon botui-action-text-icon fa"
+          :class="'fa-' + action.text.icon"></i>
+          <input type="date" v-model="action.datepicker.value[0]" :value="action.datepicker.value"
+          :size="action.datepicker.size" class="botui-actions-datepicker-input" :class="action.datepicker.cssClass" required v-focus/>
+          <input type="date" v-model="action.datepicker.value[1]" :value="action.datepicker.value"
+          :size="action.datepicker.size" class="botui-actions-datepicker-input" :class="action.datepicker.cssClass"  required v-focus/>
+          <button type="submit"
+            :class="{'botui-actions-buttons-button': !!action.text.button, 'botui-actions-text-submit': !action.text.button}">
+            <i v-if="action.text.button && action.text.button.icon" class="botui-icon botui-action-button-icon fa"
+            :class="'fa-' + action.text.button.icon"></i>
+            <span>{{(action.text.button && action.text.button.label) || 'Go'}}</span>
+          </button>
+        </form>
       </div>
     </transition>
   </div>
