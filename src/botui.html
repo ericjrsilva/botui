@@ -85,6 +85,9 @@
             </button>
           </div>
         </form>
+        <form v-if="action.type == 'datepicker'" class="botui-actions-text" @submit.prevent="handle_action_datepicker()" :class="action.cssClass">
+            <datepicker v-model="action.datepicker.value" :value="action.datepicker.value" :format="action.datepicker.format" :shortcuts="action.datepicker.shortcuts" :width="action.datepicker.inputSize" @confirm="handle_action_datepicker()" :confirm-text="action.datepicker.confirmText" :range-separator="action.datepicker.rangeSeparator" :lang="action.datepicker.language" :not-before="action.datepicker.min" @clear="handle_datepicker_delete()" valueType="format" range appendToBody  :confirm="action.datepicker.confirm" :disabled-days="action.datepicker.disabledDays" :default-value="action.datepicker.min" class="botui-actions-datepicker" :placeholder="action.datepicker.placeholder" :class="action.datepicker.cssClass"></datepicker>
+        </form>
       </div>
     </transition>
   </div>

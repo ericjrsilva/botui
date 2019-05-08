@@ -13,6 +13,7 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script src="build/botui.js"></script>
+  <script src="https://unpkg.com/vue"></script>
   <script>
     var botui = new BotUI('hello-world');
 
@@ -24,16 +25,8 @@
         botui.message.update(index, {
           content: 'Hello World from bot!',
           loading: false
-        }).then(function () {
-          botui.message.add({
-            delay: 2000,
-            //loading: true,
-            photo: true,
-            photo: 'https://moin.im/face.svg',
-            content: 'Delayed Hello World'
-          });
-        });
-      }, 5000);
+        })
+      });
     });
 
     botui.message.add({
@@ -41,23 +34,22 @@
       photo: false,
       content: 'Hello World from human!'
     }).then(function () {
-      botui.action.select({
+      var minData =  new Date()
+      minData.setDate(minData.getDate()+60) 
+      botui.action.datepicker({
         action: {
-            placeholder : "Select Language",
-            value: 'TR,EN', // Selected value or Selected Array object. Example: [{value: "TR", text : "Türkçe" },{value: "EN", text : "English" }]
-            multipleselect : true, // Default: false
-            options : [
-              {value: "EN", text : "English" },
-              {value: "ES", text : "Español" },
-              {value: "TR", text : "Türkçe" },
-              {value: "DE", text : "Deutsch" },
-              {value: "FR", text : "Français" },
-              {value: "IT", text : "Italiano" },
-            ],
-            button: {
-              icon: 'check',
-              label: 'OK'
-            }
+            msg: (arr) => `De ${arr[0]} até ${arr[1]}`,
+            placeholder: 'Data inicio',
+            shortcuts: false,
+            confirm: true,
+            format: "DD/MM/YYYY",
+            language: "pt-br",
+            min: minData,
+            handleConfirm: "handle_action_datepicker()",
+            rangeSeparator: "até",
+            confirmText: "Enviar",
+            handleKeyDown: (event) => console.log(event)
+
           }
       }).then(function (res) {
         console.log(res.value);

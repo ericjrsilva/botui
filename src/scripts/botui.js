@@ -30,7 +30,8 @@
     _options = {
       debug: false,
       fontawesome: true,
-      searchselect: true
+      searchselect: true,
+      datepicker: true
     },
     _container, // the outermost Element. Needed to scroll to bottom, for now.
     _interface = {}, // methods returned by a BotUI() instance.
@@ -42,7 +43,8 @@
     },
     _fontAwesome = 'https://use.fontawesome.com/ea731dcb6f.js',
     _esPromisePollyfill = 'https://cdn.jsdelivr.net/es6-promise/4.1.0/es6-promise.min.js', // mostly for IE
-    _searchselect =  "https://unpkg.com/vue-select@2.4.0/dist/vue-select.js";
+    _searchselect =  "https://unpkg.com/vue-select@2.4.0/dist/vue-select.js",
+    _datepicker = "https://unpkg.com/vue2-datepicker@2.11.1/lib/index.js";
 
     root.Vue = root.Vue || opts.vue;
 
@@ -104,7 +106,13 @@
             show: false,
             type: 'text',
             autoHide: true,
-            addMessage: true
+            addMessage: true,
+            datepicker: {
+              language: "en",
+              shortcuts: true,
+              confirm: false,
+              handleConfirm: "submit"
+            }
           },
           messages: []
         };
@@ -191,6 +199,20 @@
               }
             }
           }
+        },
+        handle_action_datepicker: function () {
+          if(!this.action.datepicker.value) return;
+          var text = this.action.datepicker.msg(this.action.datepicker.value)
+          _handleAction(text);
+    			_actionResolve({
+            type: 'datepicker',
+            value: text
+          });
+    			this.action.datepicker.value = [];
+        },
+        handle_datepicker_delete: function(){
+          if(!this.action.datepicker.value) return;
+          this.action.datepicker.value = [];
         }
     	}
     };
@@ -385,11 +407,37 @@
         _instance.action.button.buttons = _opts.actionButton;
         _instance.action.text = _opts.actionText;
         return _showActions(_opts);
+      },
+      datepicker: function (_opts) {
+        _checkAction(_opts);
+        _opts.type = 'datepicker';
+        _opts.action.min = _opts.action.min || new Date();
+        _opts.action.value = _opts.action.value || [];
+        _opts.action.msg = _opts.action.msg ;
+        _opts.action.handleConfirm = _opts.action.handleConfirm;
+        _opts.action.shortcuts = _opts.action.shortcuts || false;
+        _opts.action.inputSize = _opts.action.inputSize;
+        _opts.action.confirm = _opts.action.confirm;
+        _opts.action.min = _opts.action.min;
+        _opts.action.confirmText = _opts.action.confirmText;
+        _opts.action.rangeSeparator = _opts.action.rangeSeparator;
+        _opts.action.cssClass = _opts.action.cssClass;
+        _opts.action.disabledDays = _opts.action.disabledDays;
+        _opts.action.placeholder = _opts.action.placeholder;
+        _opts.action.format = _opts.action.format || "MM-DD-YYYY";
+        _instance.action.datepicker = _opts.action;
+        return _showActions(_opts);
       }
     };
 
     if(_options.fontawesome) {
       loadScript(_fontAwesome);
+    }
+
+    if(_options.datepicker){
+      loadScript(_datepicker, function (){
+        Vue.component('datepicker', DatePicker.default)
+      });
     }
 
     if(_options.searchselect) {
